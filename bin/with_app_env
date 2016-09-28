@@ -10,7 +10,7 @@ echo -e "Establishing the environment for $APP_ENV from $VAULT_ADDR"
 
 export APP_ENV_MAP=${APP_ENV_FILE:-/tmp/app_env}
 
-# if no token is passed in, use the one provided by the util server
+# raise an error for missing vault token
 if [ -z $VAULT_TOKEN ]; then
   echo "no VAULT_TOKEN set!"
   exit 1
