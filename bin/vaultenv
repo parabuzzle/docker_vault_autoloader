@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+# Read an environment variable from the local keyserver
+#
+# Can be used to initialize environment variables.
+#
+# export PASSWORD=$( vaultenv db/password )
+#
+# Author::    Michael Heijmans  (mailto:parabuzzle@gmail.com)
+# Copyright:: Copyright (c) 2016 Michael Heijmans
+# License::   MIT
+
+require '/lib/vault_loader.rb'
+
+vault = VaultLoader.new
+
+unless ARGV.length > 0
+  puts "usage: vaultenv key"
+  exit 1
+end
+
+begin
+  if val = vault.read(ARGV[0])
+    $stderr.puts "fetched #{ARGV[0]} from #{vault.address}"
+    puts val
+  else
+    exit 1
+  end
+rescue Vault::HTTPConnectionError
+  $stderr.puts "attempting to fetch the value of #{ARGV[0]} from #{vault.address}"
+  exit 2
+rescue Errno::ECONNREFUSED, Net::OpenTimeout
+  $stderr.puts "Timeout while connecting to #{vault.address}"
+  exit 2
+rescue StandardError => e
+  $stderr.puts e
+  exit 2
+end

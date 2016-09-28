@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Wraps a command in the warm and cozy shell we want
+# 
+# Author::    Michael Heijmans  (mailto:parabuzzle@gmail.com)
+# Copyright:: Copyright (c) 2016 Michael Heijmans
+# License::   MIT
+
+set -e
+echo -e "Establishing the environment for $APP_ENV from $VAULT_ADDR"
+
+export APP_ENV_MAP=${APP_ENV_FILE:-/tmp/app_env}
+
+# if no token is passed in, use the one provided by the util server
+if [ -z $VAULT_TOKEN ]; then
+  echo "no VAULT_TOKEN set!"
+  exit 1
+fi
+
+source $APP_ENV_MAP
+
+echo -e "Finished establishing the environment for $APP_ENV from $VAULT_ADDR"
+$@
